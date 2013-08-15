@@ -17,7 +17,8 @@ var GameEngine = (function() {
         }, 50); // 20 fps
     }
     
-    gameEngine.doStuff = function() {
+    gameEngine.endGame = function() {
+        clearInterval(timer);
         $('div').css('display', 'none');
     }
     

@@ -1,5 +1,10 @@
 var Controller = (function() {
-    var controller = {},
+    var controller = {
+        hold: false,
+        rotate: false,
+        down: false,
+        move: 0 //-1 = left, 1 = right
+    },
         ESC = 27,
         SPACE = 32,
         LEFT = 37,
@@ -19,17 +24,22 @@ var Controller = (function() {
         else {
             switch(code) {
                 case SPACE:
+                    controller.hold = true;
                     break;
                 case ESC:
-                    GameEngine.doStuff();
+                    GameEngine.endGame();
                     break;
                 case LEFT:
+                    controller.move = -1;
                     break;
                 case RIGHT:
+                    controller.move = 1;
                     break;
                 case UP:
+                    controller.rotate = true;
                     break;
                 case DOWN:
+                    controller.down = true;
                     break;
             }
         }
