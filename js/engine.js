@@ -30,7 +30,7 @@ var GameEngine = (function() {
         
         curBlock = new Block(4, 20, chooseBlock());
         nextBlock = new Block(0, 0, chooseBlock());
-        
+
         holdable = true;
         
         updateNext = true;
@@ -96,8 +96,13 @@ var GameEngine = (function() {
     
     var canRotate = function() {
         var rotatable = true;
-        
-        return rotateable
+        for (var i = 0; i < 4; i++) {
+            if (!isFree(curBlock.checkRot(i), curBlock.checkRot(4 + i))) {
+                rotatable = false;
+                break;
+            }
+        }
+        return rotatable;
     }
     
     var holdBlock = function() {
@@ -164,7 +169,7 @@ var GameEngine = (function() {
             tryMove(0, -1);
         if (Controller.rotate)
             tryRotate();
-                
+                            
         counter++;
         if (counter === gameSpeed) {
             counter = 0;

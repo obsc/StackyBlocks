@@ -1,26 +1,38 @@
 function Block(x, y, type) {
-    var OFFSET = [
-        [0, -1, 1, 2, 0, 0, 0, 0],
-        [0, -1, -1, 1, 0, 0, 1, 0],
-        [0, -1, 1, 1, 0, 0, 0, 1],
-        [0, 0, -1, -1, 0, 1, 0, 1],
-        [0, -1, 0, 1, 0, 0, 1, 1],
-        [0, -1, 0, 1, 0, 0, 1, 0],
-        [0, 0, -1, 1, 0, 1, 1, 0]
-    ];
-    var tilted = false;
+    var rotate = 0;
     
     this.type = type;
     
-    this.x = [];
-    this.y = [];
+    this.x = [0, 0, 0, 0];
+    this.y = [0, 0, 0, 0];
     for (var i = 0; i < 4; i++) {
-        this.x.push(x + OFFSET[type][i]);
-        this.y.push(y + OFFSET[type][4 + i]);
+        this.x[i] = x + OFFSET[rotate][type][i];
+        this.y[i] = y + OFFSET[rotate][type][4 + i];
+    }
+    
+    this.newPos = function(xPos, yPos) {
+        for (var i = 0; i < 4; i++) {
+            this.x[i] = xPos + OFFSET[rotate][type][i];
+            this.y[i] = yPos + OFFSET[rotate][type][4 + i];
+        }
+    }
+    
+    this.checkRot = function(i) {
+        var nextRot = rotate + 1;
+        if (nextRot === 4)
+            nextRot = 0;
+        
+        if (i < 4)
+            return this.x[0] + OFFSET[nextRot][type][i];
+        else
+            return this.y[0] + OFFSET[nextRot][type][i];
     }
     
     this.rotate = function() {
-        tilted = !tilted;
+        rotate += 1;
+        if (rotate === 4)
+            rotate = 0;
+        this.newPos(this.x[0], this.y[0]);
     }
     
     this.move = function(dx, dy) {
@@ -31,7 +43,7 @@ function Block(x, y, type) {
     }
     
     this.checkNum = function() {
-        if (tilted)
+        if (rotate % 2 === 1)
             return this.width();
         else
             return this.height();
@@ -58,3 +70,42 @@ function Block(x, y, type) {
     }
     
 }
+
+var OFFSET = [
+    [
+        [0, -1, 1, 2, 0, 0, 0, 0],
+        [0, -1, -1, 1, 0, 0, 1, 0],
+        [0, -1, 1, 1, 0, 0, 0, 1],
+        [0, 0, -1, -1, 0, 1, 0, 1],
+        [0, -1, 0, 1, 0, 0, 1, 1],
+        [0, -1, 0, 1, 0, 0, 1, 0],
+        [0, 0, -1, 1, 0, 1, 1, 0]
+    ],
+    [
+        [0, 0, 0, 0, 0, -1, 1, 2],
+        [0, 0, 1, 0, 0, 1, 1, -1],
+        [0, 0, 0, 1, 0, 1, -1, -1],
+        [0, 0, -1, -1, 0, 1, 0, 1],
+        [0, 0, 1, 1, 0, 1, 0, -1],
+        [0, 0, 1, 0, 0, 1, 0, -1],
+        [0, 1, 1, 0, 0, 0, 1, -1]
+    ],
+    [
+        [0, -1, 1, 2, 0, 0, 0, 0],
+        [0, 1, 1, -1, 0, 0, -1, 0],
+        [0, 1, -1, -1, 0, 0, 0, -1],
+        [0, 0, -1, -1, 0, 1, 0, 1],
+        [0, -1, 0, 1, 0, 0, 1, 1],
+        [0, 1, 0, -1, 0, 0, -1, 0],
+        [0, 0, -1, 1, 0, 1, 1, 0]
+    ],
+    [
+        [0, 0, 0, 0, 0, -1, 1, 2],
+        [0, 0, -1, 0, 0, -1, -1, 1],
+        [0, 0, 0, -1, 0, -1, 1, 1],
+        [0, 0, -1, -1, 0, 1, 0, 1],
+        [0, 0, 1, 1, 0, 1, 0, -1],
+        [0, 0, -1, 0, 0, -1, 0, 1],
+        [0, 1, 1, 0, 0, 0, 1, -1]
+    ]
+];
