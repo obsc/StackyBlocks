@@ -24,6 +24,8 @@ var GameEngine = (function() {
             draw();
         }, 50); // 20 fps
         
+        View.newField();
+        
         curBlock = new Block(4, 20, chooseBlock());
         nextBlock = new Block(0, 0, chooseBlock());
         
@@ -60,6 +62,8 @@ var GameEngine = (function() {
             return false;
         if (yPos < 0)
             return false;
+        if (yPos >= 20)
+            return true;
         return View.isFree(xPos, yPos);
     }
     
@@ -70,6 +74,15 @@ var GameEngine = (function() {
             return true;
         }
         return false;
+    }
+    
+    var stackBlock = function() {
+        View.addBlock(curBlock);
+        curBlock = new Block(4, 20, nextBlock.type);
+        nextBlock = new Block(0, 0, chooseBlock());
+        updateField = true;
+        updateCur = true;
+        updateNext = true;
     }
     
     var update = function() {
@@ -86,7 +99,7 @@ var GameEngine = (function() {
         if (counter === gameSpeed) {
             counter = 0;
             if (!tryMove(0,-1)) {
-            
+                stackBlock();
             }
         }
     }
@@ -108,6 +121,12 @@ var GameEngine = (function() {
             $('.cur').remove();
             View.drawCur(curBlock);
             updateCur = false;
+        }
+        
+        if (updateField) {
+            $('.field').remove();
+            View.drawField();
+            updateField = false;
         }
     }
     

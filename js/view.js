@@ -1,14 +1,34 @@
 var View = (function() {
     var view = {}
-        
-    view.field = [];
+    var field;
+    
+    view.newField = function() {
+        field = [];
+        for (var i = 0; i < 10; i++) {
+            field.push([]);
+            for (var j = 0; j < 20; j++) {
+                field[i].push(-1);
+            }
+        }
+    }
+    
+    view.addBlock = function(block) {
+        for (var i = 0; i < 4; i++) {
+            field[block.x[i]][block.y[i]] = block.type;
+        }
+    }
     
     view.isFree = function(xPos, yPos) {
-        return true;
+        return field[xPos][yPos] === -1;
     }
     
     view.drawField = function() {
-    
+        for (var i = 0; i < 10; i++) {
+            for (var j = 0; j < 20; j++) {
+                if (field[i][j] !== -1)
+                    drawPart('#gamefield', i * 30, 570 - j * 30, 'field');
+            }
+        }
     }
     
     view.drawCur = function(block) {
@@ -32,8 +52,13 @@ var View = (function() {
     
     var drawBlock = function(id, block, xPos, yPos, i, tag) {
         var x = xPos + block.x[i] * 30,
-            y = yPos - block.y[i] * 30,
-            $element = $('<div/>').addClass('block');
+            y = yPos - block.y[i] * 30;
+
+        drawPart(id, x, y, tag);
+    }
+    
+    var drawPart = function(id, x, y, tag) {
+        var $element = $('<div/>').addClass('block');
         
         if (tag)
             $element.addClass(tag);
