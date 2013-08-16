@@ -52,8 +52,16 @@ var GameEngine = (function() {
     }
     
     var chooseBlock = function() {
-        return 3;
-        //return ~~(Math.random() * 7);
+        return ~~(Math.random() * 7);
+    }
+    
+    var tryMove = function(xPos, yPos) {
+        if (canMove(xPos, yPos)) {
+            curBlock.move(xPos, yPos);
+            updateCur = true;
+            return true;
+        }
+        return false;
     }
     
     var canMove = function(dx, dy) {
@@ -77,13 +85,19 @@ var GameEngine = (function() {
         return View.isFree(xPos, yPos);
     }
     
-    var tryMove = function(xPos, yPos) {
-        if (canMove(xPos, yPos)) {
-            curBlock.move(xPos, yPos);
+    var tryRotate = function() {
+        if (canRotate()) {
+            curBlock.rotate();
             updateCur = true;
             return true;
         }
         return false;
+    }
+    
+    var canRotate = function() {
+        var rotatable = true;
+        
+        return rotateable
     }
     
     var holdBlock = function() {
@@ -148,7 +162,9 @@ var GameEngine = (function() {
             tryMove(Controller.move, 0);
         if (Controller.down)
             tryMove(0, -1);
-    
+        if (Controller.rotate)
+            tryRotate();
+                
         counter++;
         if (counter === gameSpeed) {
             counter = 0;
