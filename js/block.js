@@ -8,6 +8,7 @@ function Block(x, y, type) {
         [0, -1, 0, 1, 0, 0, 1, 0],
         [0, 0, -1, 1, 0, 1, 1, 0]
     ];
+    var tilted = false;
     
     this.type = type;
     
@@ -18,11 +19,26 @@ function Block(x, y, type) {
         this.y.push(y + OFFSET[type][4 + i]);
     }
     
+    this.rotate = function() {
+        tilted = !tilted;
+    }
+    
     this.move = function(dx, dy) {
         for (var j = 0; j < 4; j++) {
             this.x[j] += dx;
             this.y[j] += dy;
         }
+    }
+    
+    this.checkNum = function() {
+        if (tilted)
+            return this.width();
+        else
+            return this.height();
+    }
+    
+    this.bot = function() {
+        return Math.min.apply(Math, this.y);
     }
     
     this.width = function() {

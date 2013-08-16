@@ -18,8 +18,44 @@ var View = (function() {
         }
     }
     
+    view.pushDown = function(rows) {
+        var row = rows[0] + 1,
+            num = 1,
+            len = rows.length;
+            
+        while (row < 20) {
+            if (num < len) {
+                if (row === rows[num]) {
+                    num++;
+                    row++;
+                    continue;
+                }
+            }
+            view.shiftRow(row, num);
+            row++;
+        }
+    }
+    
+    view.shiftRow = function(row, num) {
+        for (var i = 0; i < 10; i++) {
+            field[i][row-num] = field[i][row];
+            field[i][row] = -1;
+        }
+    }
+    
     view.isFree = function(xPos, yPos) {
         return field[xPos][yPos] === -1;
+    }
+    
+    view.checkRow = function(row) {
+        full = true;
+        for (var i = 0; i < 10; i++) {
+            if (view.isFree(i, row)) {
+                full = false;
+                break;
+            }
+        }
+        return full;
     }
     
     view.drawField = function() {

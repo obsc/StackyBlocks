@@ -52,7 +52,8 @@ var GameEngine = (function() {
     }
     
     var chooseBlock = function() {
-        return ~~(Math.random() * 7);
+        return 3;
+        //return ~~(Math.random() * 7);
     }
     
     var canMove = function(dx, dy) {
@@ -120,6 +121,26 @@ var GameEngine = (function() {
         }
     }
     
+    var gameTick = function() {
+        var bot, num;
+        var clearRows = [];
+        
+        if (!tryMove(0,-1)) {
+            checkEnd();
+            bot = curBlock.bot();
+            num = curBlock.checkNum();
+            stackBlock();
+            
+            while (num > 0) {
+                if (bot < 20 && View.checkRow(bot))
+                    clearRows.push(bot);
+                bot++;
+                num--;
+            }
+            View.pushDown(clearRows);
+        }
+    }
+    
     var update = function() {
         if (Controller.hold && holdable)
             holdBlock();
@@ -131,10 +152,7 @@ var GameEngine = (function() {
         counter++;
         if (counter === gameSpeed) {
             counter = 0;
-            if (!tryMove(0,-1)) {
-                checkEnd();
-                stackBlock();
-            }
+            gameTick();
         }
         
         Controller.clear();
