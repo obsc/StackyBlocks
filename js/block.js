@@ -18,6 +18,13 @@ function Block(x, y, type) {
         this.y.push(y + OFFSET[type][4 + i]);
     }
     
+    this.move = function(dx, dy) {
+        for (var j = 0; j < 4; j++) {
+            this.x[j] += dx;
+            this.y[j] += dy;
+        }
+    }
+    
     this.width = function() {
         if (this.type === 0)
             return 4;

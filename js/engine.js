@@ -1,16 +1,17 @@
 var GameEngine = (function() {
     var gameEngine = {};
-    var timer;
-    var heldBlock;
-    var nextBlock;
-    var curBlock;
+    var timer; // Timer for update and draw events
+    var counter = 0; // Counter for update
+    var gameSpeed = 10; // How many update ticks until a block moves down
+    
+    var heldBlock, nextBlock, curBlock; // Block objects
     
     var updateHeld = false,
         updateNext = false,
         updateCur = false;
-        updateField = false;
+        updateField = false; // Update flags for drawing
     
-    gameEngine.play = false;
+    gameEngine.play = false; // Flag for when game is currently being played
     
     gameEngine.init = function() {
         Controller.init();
@@ -23,7 +24,7 @@ var GameEngine = (function() {
             draw();
         }, 50); // 20 fps
         
-        curBlock = new Block(5, 21, chooseBlock());
+        curBlock = new Block(4, 20, chooseBlock());
         nextBlock = new Block(0, 0, chooseBlock());
         
         updateNext = true;
@@ -36,15 +37,58 @@ var GameEngine = (function() {
         heldBlock = undefined;
         nextBlock = undefined;
         curBlock = undefined;
-        $('div').css('display', 'none');
+        $('.block').remove();
     }
     
     var chooseBlock = function() {
         return ~~(Math.random() * 7);
     }
     
+    var canMove = function(dx, dy) {
+        var moveable = true;
+        for (var i = 0; i < 4; i++) {
+            if (!isFree(curBlock.x[i] + dx, curBlock.y[i] + dy)) {
+                moveable = false;
+                break;
+            }
+        }
+        return moveable
+    }
+    
+    var isFree = function(xPos, yPos) {
+        if (xPos < 0 || xPos >= 10)
+            return false;
+        if (yPos < 0)
+            return false;
+        return View.isFree(xPos, yPos);
+    }
+    
+    var tryMove = function(xPos, yPos) {
+        if (canMove(xPos, yPos)) {
+            curBlock.move(xPos, yPos);
+            updateCur = true;
+            return true;
+        }
+        return false;
+    }
+    
     var update = function() {
-        
+        if (Controller.move !== 0) {
+            tryMove(Controller.move, 0);
+            Controller.move = 0;
+        }
+        if (Controller.down) {
+            tryMove(0, -1);
+            Controller.down = false;
+        }
+    
+        counter++;
+        if (counter === gameSpeed) {
+            counter = 0;
+            if (!tryMove(0,-1)) {
+            
+            }
+        }
     }
     
     var draw = function() {
@@ -52,6 +96,18 @@ var GameEngine = (function() {
             $('#next .block').remove();
             View.drawSide('#next', nextBlock);
             updateNext = false;
+        }
+        
+        if (updateHeld) {
+            $('#held .block').remove();
+            View.drawSide('#held', heldBlock);
+            updateHeld = false;
+        }
+        
+        if (updateCur) {
+            $('.cur').remove();
+            View.drawCur(curBlock);
+            updateCur = false;
         }
     }
     
