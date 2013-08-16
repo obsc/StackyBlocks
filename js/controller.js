@@ -26,15 +26,15 @@ var Controller = (function() {
     var keyHandler = function(e) {
         var code = (e.keyCode ? e.keyCode : e.which);
         
+        if (code === ESC)
+            GameEngine.endGame();
+        
         if (!GameEngine.play && code === SPACE)
             GameEngine.startGame();
-        else {
+        else if (GameEngine.play) {
             switch(code) {
                 case SPACE:
                     controller.hold = true;
-                    break;
-                case ESC:
-                    GameEngine.endGame();
                     break;
                 case LEFT:
                     controller.move = -1;

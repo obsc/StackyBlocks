@@ -34,16 +34,21 @@ var GameEngine = (function() {
         holdable = true;
         
         updateNext = true;
+        $('.block').remove();
     }
     
     gameEngine.endGame = function() {
+        gameEngine.gameOver();
+        $('.block').remove();
+    }
+    
+    gameEngine.gameOver = function() {
         gameEngine.play = false;
         clearInterval(timer);
-        
+
         heldBlock = undefined;
         nextBlock = undefined;
         curBlock = undefined;
-        $('.block').remove();
     }
     
     var chooseBlock = function() {
@@ -106,6 +111,15 @@ var GameEngine = (function() {
         holdable = true;
     }
     
+    var checkEnd = function() {
+        for (var i = 0; i < 4; i++) {
+            if (curBlock.y[i] >= 20) {
+                gameEngine.gameOver();
+                break;
+            }
+        }
+    }
+    
     var update = function() {
         if (Controller.hold && holdable)
             holdBlock();
@@ -118,6 +132,7 @@ var GameEngine = (function() {
         if (counter === gameSpeed) {
             counter = 0;
             if (!tryMove(0,-1)) {
+                checkEnd();
                 stackBlock();
             }
         }
