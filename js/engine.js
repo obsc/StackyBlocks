@@ -6,6 +6,8 @@ var GameEngine = (function() {
     
     var heldBlock, nextBlock, curBlock; // Block objects
     
+    var holdable = false;
+    
     var updateHeld = false,
         updateNext = false,
         updateCur = false;
@@ -28,6 +30,8 @@ var GameEngine = (function() {
         
         curBlock = new Block(4, 20, chooseBlock());
         nextBlock = new Block(0, 0, chooseBlock());
+        
+        holdable = true;
         
         updateNext = true;
     }
@@ -76,6 +80,22 @@ var GameEngine = (function() {
         return false;
     }
     
+    var holdBlock = function() {
+        var tempType = curBlock.type;
+        if (heldBlock)
+            curBlock = new Block(4, 20, heldBlock.type);
+        else {
+            curBlock = new Block(4, 20, nextBlock.type);
+            nextBlock = new Block(0, 0, chooseBlock());
+            updateNext = true;
+        }
+        
+        heldBlock = new Block(0, 0, tempType);
+        updateCur = true;
+        updateHeld = true;
+        holdable = false;
+    }
+    
     var stackBlock = function() {
         View.addBlock(curBlock);
         curBlock = new Block(4, 20, nextBlock.type);
@@ -83,17 +103,16 @@ var GameEngine = (function() {
         updateField = true;
         updateCur = true;
         updateNext = true;
+        holdable = true;
     }
     
     var update = function() {
-        if (Controller.move !== 0) {
+        if (Controller.hold && holdable)
+            holdBlock();
+        if (Controller.move !== 0)
             tryMove(Controller.move, 0);
-            Controller.move = 0;
-        }
-        if (Controller.down) {
+        if (Controller.down)
             tryMove(0, -1);
-            Controller.down = false;
-        }
     
         counter++;
         if (counter === gameSpeed) {
@@ -102,6 +121,8 @@ var GameEngine = (function() {
                 stackBlock();
             }
         }
+        
+        Controller.clear();
     }
     
     var draw = function() {

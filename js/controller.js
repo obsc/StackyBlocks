@@ -16,6 +16,13 @@ var Controller = (function() {
         $('body').keydown(keyHandler);
     }
     
+    controller.clear = function() {
+        controller.hold = false;
+        controller.rotate = false;
+        controller.down = false;
+        controller.move = 0;
+    }
+    
     var keyHandler = function(e) {
         var code = (e.keyCode ? e.keyCode : e.which);
         
