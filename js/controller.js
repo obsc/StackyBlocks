@@ -3,6 +3,7 @@ var Controller = (function() {
         hold: false,
         rotate: false,
         down: false,
+        drop: false,
         move: 0 //-1 = left, 1 = right
     },
         ESC = 27,
@@ -10,7 +11,8 @@ var Controller = (function() {
         LEFT = 37,
         UP = 38,
         RIGHT = 39,
-        DOWN = 40;
+        DOWN = 40,
+        DROP = 16;
     
     controller.init = function() {
         $('body').keydown(keyHandler);
@@ -20,6 +22,7 @@ var Controller = (function() {
         controller.hold = false;
         controller.rotate = false;
         controller.down = false;
+        controller.drop = false;
         controller.move = 0;
     }
     
@@ -47,6 +50,9 @@ var Controller = (function() {
                     break;
                 case DOWN:
                     controller.down = true;
+                    break;
+                case DROP:
+                    controller.drop = true;
                     break;
             }
         }

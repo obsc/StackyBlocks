@@ -131,6 +131,30 @@ var GameEngine = (function() {
         holdable = true;
     }
     
+    var endRound = function() {
+        var bot, num;
+        var clearRows = [];
+        checkEnd();
+        bot = curBlock.bot();
+        num = curBlock.checkNum();
+        stackBlock();
+        
+        while (num > 0) {
+            if (bot < 20 && View.checkRow(bot))
+                clearRows.push(bot);
+            bot++;
+            num--;
+        }
+        
+        View.pushDown(clearRows);
+    }
+    
+    var dropDown = function() {
+        while (tryMove(0, -1)) {
+        }
+        endRound();
+    }
+    
     var checkEnd = function() {
         for (var i = 0; i < 4; i++) {
             if (curBlock.y[i] >= 20) {
@@ -140,23 +164,9 @@ var GameEngine = (function() {
         }
     }
     
-    var gameTick = function() {
-        var bot, num;
-        var clearRows = [];
-        
+    var gameTick = function() {        
         if (!tryMove(0,-1)) {
-            checkEnd();
-            bot = curBlock.bot();
-            num = curBlock.checkNum();
-            stackBlock();
-            
-            while (num > 0) {
-                if (bot < 20 && View.checkRow(bot))
-                    clearRows.push(bot);
-                bot++;
-                num--;
-            }
-            View.pushDown(clearRows);
+            endRound();
         }
     }
     
@@ -169,6 +179,8 @@ var GameEngine = (function() {
             tryMove(0, -1);
         if (Controller.rotate)
             tryRotate();
+        if (Controller.drop)
+            dropDown();
                             
         counter++;
         if (counter === gameSpeed) {
