@@ -62,7 +62,7 @@ var View = (function() {
         for (var i = 0; i < 10; i++) {
             for (var j = 0; j < 20; j++) {
                 if (field[i][j] !== -1)
-                    drawPart('#gamefield', i * 30, 570 - j * 30, 'field');
+                    drawPart('#gamefield', i * 30, 570 - j * 30, field[i][j], 'field');
             }
         }
     }
@@ -90,14 +90,15 @@ var View = (function() {
         var x = xPos + block.x[i] * 30,
             y = yPos - block.y[i] * 30;
 
-        drawPart(id, x, y, tag);
+        drawPart(id, x, y, block.type, tag);
     }
     
-    var drawPart = function(id, x, y, tag) {
+    var drawPart = function(id, x, y, type, tag) {
         var $element = $('<div/>').addClass('block');
         
         if (tag)
             $element.addClass(tag);
+        $element.css('background', COLORS[type]);
         $element.css('left', x+'px').css('top', y+'px');
         $(id).append($element);
     }

@@ -58,7 +58,6 @@ div {
 .block {
     width: 28px;
     height: 28px;
-    background: green;
     border-radius: 2px;
     border: 1px solid black;
 }
